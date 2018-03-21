@@ -1,5 +1,5 @@
 body {
-    padding-top: 60px;
+    padding: 60px;
     font-family: "sanserif";
 }
 
@@ -31,4 +31,8 @@ body {
 #logo {
     width: 80px;
     height: 60px;
+}
+
+#passwordErr {
+    color: red;
 }

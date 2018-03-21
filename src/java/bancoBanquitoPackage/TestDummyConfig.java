@@ -18,6 +18,7 @@ public class TestDummyConfig implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ArrayList<User> users = new ArrayList<>();
+        users.add(new User("Admin", "Tester", "Tecmilenio", "010101", "Monterrey", "Nuevo Leon", "Mexico", "01/01/1991", "10000000", "dummy@tester.com", "a"));
         sce.getServletContext().setAttribute("Users", users);
     }
 

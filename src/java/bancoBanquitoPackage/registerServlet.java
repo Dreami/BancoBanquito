@@ -7,17 +7,20 @@ package bancoBanquitoPackage;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author TecMilenio
  */
 public class registerServlet extends HttpServlet {
-
+    ArrayList<User> users = new ArrayList<User>();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -29,18 +32,33 @@ public class registerServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet registerServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet registerServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        ServletContext sc = request.getServletContext();
+        HttpSession s = request.getSession();
+        users = (ArrayList<User>) sc.getAttribute("Users");
+        
+        String name, lastname, bday, address, postalcode, city, state, country, phone, email, password1, password2;
+        password1 = request.getParameter("password1");
+        password2 = request.getParameter("password2");
+        if(password1.equals(password2)) {
+            s.removeAttribute("passwordErr");
+            name = request.getParameter("name");
+            lastname = request.getParameter("lastname");
+            bday = request.getParameter("bday");
+            address = request.getParameter("address");
+            postalcode = request.getParameter("postalcode");
+            city = request.getParameter("city");
+            state = request.getParameter("state");
+            country = request.getParameter("country");
+            phone = request.getParameter("phone");
+            email = request.getParameter("email");
+            
+            User user = new User(name, lastname, address, postalcode, city, state, country, bday, phone, email, password1);
+            users.add(user);
+            sc.setAttribute("Users", users);
+            s.setAttribute("loggedUser", user);
+        } else {
+            s.setAttribute("passwordErr", "<p id='passwordErr'>Su contraseña no coincide.</p>");
+            response.sendRedirect("registrar.jsp");
         }
     }
 
