@@ -33,6 +33,42 @@ body {
     height: 60px;
 }
 
-#passwordErr {
+.input_error {
     color: red;
+}
+
+#mainMenu {
+    border-radius: 25px;
+    display: block;
+    padding: 20px;
+    width: 20%;
+    height: 100%;
+    color: white;
+    float: left;
+    margin-right: 10px;
+    border: 3px solid black;
+    overflow: auto;
+    background-color: darkblue;
+}
+
+#mainMenu a {
+    color: white;
+}
+
+#menuActions {
+    border-radius: 25px;
+    border: 3px solid black;
+    padding: 30px;
+    float: left;
+    min-height: 100%;
+    height: 100%;
+    overflow: auto;
+    width: 75%;
+}
+
+.transferForm {
+    border-radius: 25px;
+    border: 2px solid black;
+    padding: 30px;
+    margin-bottom: 15px;
 }

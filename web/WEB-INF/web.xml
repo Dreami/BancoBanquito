@@ -8,6 +8,14 @@
         <servlet-name>registerServlet</servlet-name>
         <servlet-class>bancoBanquitoPackage.registerServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>accountServlet</servlet-name>
+        <servlet-class>bancoBanquitoPackage.accountServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>transferServlet</servlet-name>
+        <servlet-class>bancoBanquitoPackage.transferServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>loginServlet</servlet-name>
         <url-pattern>/loginServlet</url-pattern>
@@ -15,6 +23,19 @@
     <servlet-mapping>
         <servlet-name>registerServlet</servlet-name>
         <url-pattern>/registerServlet</url-pattern>
+    </servlet-mapping>
+    <listener>
+        <listener-class>
+        bancoBanquitoPackage.Config
+    </listener-class>
+    </listener>
+    <servlet-mapping>
+        <servlet-name>accountServlet</servlet-name>
+        <url-pattern>/accountServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>transferServlet</servlet-name>
+        <url-pattern>/transferServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

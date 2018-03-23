@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class User {
     private static final DateTimeFormatter DTF1 = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private static final DateTimeFormatter DTF2 = DateTimeFormatter.ofPattern("M/d/yyyy");
-    private String id;
+    private int id;
     private String name;
     private String lastname;
     private String address;
@@ -26,7 +26,8 @@ public class User {
     private String email;
     private String password;
 
-    public User(String name, String lastname, String address, String postalcode, String city, String state, String country, String bday, String phone, String email, String password) {
+    public User(int id, String name, String lastname, String address, String postalcode, String city, String state, String country, String bday, String phone, String email, String password) {
+        this.id = id;
         this.name = name;
         this.lastname = lastname;
         this.address = address;
@@ -38,16 +39,6 @@ public class User {
         this.phone = phone;
         this.email = email;
         this.password = password;
-        this.id = generateId(name, lastname, this.bday, email);
-    }
-    
-    private String generateId(String name, String lastname, LocalDate bday, String email) {
-        String bdayText = bday.format(DTF1);
-        bdayText = bdayText.replaceAll("/", "");
-        int atPos = email.indexOf("@");
-        String subEmail = email.substring(0, atPos);
-        
-        return (lastname + name + "_" + bdayText + "_" + subEmail);
     }
     
     private LocalDate getDueDateFromString(String dueDateText) {
@@ -66,7 +57,32 @@ public class User {
         return ld;
     }
 
-    public String getId() {
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 79 * hash + this.id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        return true;
+    }
+
+    public int getId() {
         return id;
     }
 

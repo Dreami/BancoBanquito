@@ -17,10 +17,12 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author TecMilenio
+ * @author maple
  */
-public class loginServlet extends HttpServlet {
-    ArrayList<User> users = new ArrayList<User>();
+public class transferServlet extends HttpServlet {
+    ArrayList<Account> accounts;
+    ServletContext sc = getServletContext();
+    HttpSession s;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -32,21 +34,28 @@ public class loginServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ServletContext sc = getServletContext();
-        HttpSession s = request.getSession();
-        users = (ArrayList<User>) sc.getAttribute("Users");
+        accounts = (ArrayList<Account>) sc.getAttribute("Accounts");
         
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        int acc_withdraw = paramterToInt(request.getParameter("acc_withdraw"));
+        int acc_deposit = paramterToInt(request.getParameter("acc_deposit"));
+        String amount_txt = request.getParameter("amount");
+        float amount;
         
-        for (User u : users) {
-            if(u.getEmail().equals(username)
-                    && u.getPassword().equals(password)) {
-                s.setAttribute("loggedUser", u);
-            }
+        if(isNumeric(amount_txt)) {
+            amount = Float.parseFloat(amount_txt);
+            
         }
         
-        response.sendRedirect("index.jsp");
+        response.sendRedirect("transferencias.jsp");
+    }
+    
+    private boolean isNumeric(String n) {
+        //En lugar de \\d para evitar entradas con dos decimales, i.e. 9.00.1
+        return n.matches("[0-9]*\\.?[0-9]*");
+    }
+    
+    private int paramterToInt(String s) {
+        return Integer.parseInt(s);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

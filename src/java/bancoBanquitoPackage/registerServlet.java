@@ -32,9 +32,13 @@ public class registerServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ServletContext sc = request.getServletContext();
+        ServletContext sc = getServletContext();
         HttpSession s = request.getSession();
         users = (ArrayList<User>) sc.getAttribute("Users");
+        
+        if(users == null) {
+            users = new ArrayList<>();
+        }
         
         String name, lastname, bday, address, postalcode, city, state, country, phone, email, password1, password2;
         password1 = request.getParameter("password1");
@@ -52,12 +56,12 @@ public class registerServlet extends HttpServlet {
             phone = request.getParameter("phone");
             email = request.getParameter("email");
             
-            User user = new User(name, lastname, address, postalcode, city, state, country, bday, phone, email, password1);
+            User user = new User(users.size() ,name, lastname, address, postalcode, city, state, country, bday, phone, email, password1);
             users.add(user);
             sc.setAttribute("Users", users);
             s.setAttribute("loggedUser", user);
         } else {
-            s.setAttribute("passwordErr", "<p id='passwordErr'>Su contraseña no coincide.</p>");
+            s.setAttribute("passwordErr", "<p class='input_error'>Su contraseña no coincide.</p>");
             response.sendRedirect("registrar.jsp");
         }
     }

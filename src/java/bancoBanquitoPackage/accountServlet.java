@@ -6,7 +6,6 @@
 package bancoBanquitoPackage;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -17,10 +16,12 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author TecMilenio
+ * @author maple
  */
-public class loginServlet extends HttpServlet {
-    ArrayList<User> users = new ArrayList<User>();
+public class accountServlet extends HttpServlet {
+    ArrayList<Account> accounts;
+    ServletContext sc = getServletContext();
+    HttpSession s;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -32,21 +33,39 @@ public class loginServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ServletContext sc = getServletContext();
-        HttpSession s = request.getSession();
-        users = (ArrayList<User>) sc.getAttribute("Users");
-        
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        
-        for (User u : users) {
-            if(u.getEmail().equals(username)
-                    && u.getPassword().equals(password)) {
-                s.setAttribute("loggedUser", u);
-            }
+        s = request.getSession();
+        accounts = (ArrayList<Account>) sc.getAttribute("Accounts");
+        if(accounts == null) {
+            accounts = new ArrayList<>();
         }
         
-        response.sendRedirect("index.jsp");
+        s.removeAttribute("clientNumError");
+        s.removeAttribute("accNumError");
+        s.removeAttribute("amountError");
+        s.removeAttribute("accCreated");
+        
+        
+        String client_num = request.getParameter("client_num");
+        String acc_num = request.getParameter("acc_num");
+        String acc_type = request.getParameter("acc_type");
+        String amount = request.getParameter("amount");
+        
+        if(!isNumeric(client_num)) {
+            s.setAttribute("clientNumError", "<p class='input_error'>Numero de cliente no valido.</p>");
+        } else if (!isNumeric(acc_num)){
+            s.setAttribute("accNumError", "<p class='input_error'>Numero de cuenta no valido.</p>");
+        } else if(!isNumeric(amount)) {
+            s.setAttribute("amountError", "<p class='input_error'>Cantidad de monto no valido.</p>");
+        } else {
+            s.setAttribute("accCreated", "<div class='alert alert-success'>La cuenta <b>" + acc_num + "</b> fue creada exitosamente</div>");
+        }
+        
+        response.sendRedirect("alta_cuenta.jsp");
+    }
+    
+    private boolean isNumeric(String n) {
+        //En lugar de \\d para evitar entradas con dos decimales, i.e. 9.00.1
+        return n.matches("[0-9]*\\.?[0-9]*");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

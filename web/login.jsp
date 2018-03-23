@@ -12,7 +12,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="stylesheet.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Accede su cuenta</title>
+        <title>BancoBanquito</title>
     </head>
     <body>
         <div class="container">
@@ -20,9 +20,9 @@
                 <div class="page-header">
                     <img id="loginlogo" src="images/banco-banquito-logo.png" alt="bb_logo"/>
                 </div>
-                <form method="POST" action="registerServlet">
+                <form method="POST" action="loginServlet">
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Usuario</label>
+                        <label class="col-sm-2 col-form-label">Correo</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" name="username" required/>
                         </div>
