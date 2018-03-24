@@ -36,6 +36,10 @@ public class transferServlet extends HttpServlet {
             throws ServletException, IOException {
         accounts = (ArrayList<Account>) sc.getAttribute("Accounts");
         
+        s.removeAttribute("withdraw_success");
+        s.removeAttribute("deposit_success");
+        s.removeAttribute("amountErr");
+        
         int acc_withdraw = paramterToInt(request.getParameter("acc_withdraw"));
         int acc_deposit = paramterToInt(request.getParameter("acc_deposit"));
         String amount_txt = request.getParameter("amount");
@@ -43,7 +47,23 @@ public class transferServlet extends HttpServlet {
         
         if(isNumeric(amount_txt)) {
             amount = Float.parseFloat(amount_txt);
-            
+            for(Account a : accounts) {
+                if(a.getAccountNumber() == acc_withdraw) {
+                    if(amount <= a.getAmount()) {
+                        a.substractAmount(amount);
+                        s.setAttribute("withdraw_success", "<div class='alert alert-success'> $" + amount 
+                                + " fue retirada de <b>" + acc_withdraw +  "</b> exitosamente</div>");
+                    } else {
+                        s.setAttribute("amountErr", "<p class='input_error'>Credito insuficiente para retirar</p>");
+                    }
+                }
+                
+                if(a.getAccountNumber() == acc_deposit) {
+                    a.addAmount(amount);
+                    s.setAttribute("deposit_success", "<div class='alert alert-success'> $" + amount 
+                                + " fue depositada a <b>" + acc_withdraw +  "<b> exitosamente</div>");
+                }
+            }
         }
         
         response.sendRedirect("transferencias.jsp");

@@ -33,6 +33,8 @@
                                     </c:if>
                                 </c:forEach>
                             </select>
+                            ${withdraw_success}
+                            ${amountErr}
                         </div>
                         
                         <div class="form-group">
@@ -45,6 +47,7 @@
                                     </c:if>
                                 </c:forEach>
                             </select>
+                            ${deposit_success}
                         </div>
                     </div>
                     <div class="row transferForm">
@@ -53,9 +56,7 @@
                             <input class="form-control" type="text" value="0" name="amount" required>
                         </div>
                     </div>
-                    ${transferError}
-                    ${transferSuccess}
-                    <button>Continuar</button>
+                    <button type="submit">Continuar</button>
                 </form>
             </div>
     </body>

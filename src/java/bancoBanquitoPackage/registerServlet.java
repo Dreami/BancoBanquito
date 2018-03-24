@@ -60,6 +60,7 @@ public class registerServlet extends HttpServlet {
             users.add(user);
             sc.setAttribute("Users", users);
             s.setAttribute("loggedUser", user);
+            response.sendRedirect("menuPrincipal.jsp");
         } else {
             s.setAttribute("passwordErr", "<p class='input_error'>Su contraseña no coincide.</p>");
             response.sendRedirect("registrar.jsp");

@@ -35,6 +35,7 @@ public class loginServlet extends HttpServlet {
         ServletContext sc = getServletContext();
         HttpSession s = request.getSession();
         users = (ArrayList<User>) sc.getAttribute("Users");
+        User loggedUser = null;
         
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -43,10 +44,13 @@ public class loginServlet extends HttpServlet {
             if(u.getEmail().equals(username)
                     && u.getPassword().equals(password)) {
                 s.setAttribute("loggedUser", u);
+                loggedUser = u;
+                response.sendRedirect("menuprincipal.jsp");
             }
         }
-        
-        response.sendRedirect("index.jsp");
+        if(loggedUser == null) {
+            response.sendRedirect("index.jsp");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

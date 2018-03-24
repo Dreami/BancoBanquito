@@ -18,7 +18,7 @@
         <div class="container-fluid">
             <jsp:include page="/mainMenuDiv.jsp"/>
             <div id="menuActions" class="col-md-8">
-                <h1>Bienvenido ${sessionScope.loggedUser.getName()}</h1>
+                <h1>Bienvenido ${sessionScope.loggedUser.getName()} ${sessionScope.loggedUser.getLastname()}</h1>
             </div>
         </div>
     </body>

@@ -81,6 +81,11 @@ public class User {
         }
         return true;
     }
+    
+    public String getBdayFormat() {
+        DateTimeFormatter datetimeformatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return this.bday.format(datetimeformatter);
+    }
 
     public int getId() {
         return id;

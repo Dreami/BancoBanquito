@@ -72,3 +72,15 @@ body {
     padding: 30px;
     margin-bottom: 15px;
 }
+
+.clientTable thead {
+    border-bottom: 3px solid black;
+}
+
+.clientTable td, th {
+    padding: 8px;
+}
+
+.clientTable {
+    margin-bottom: 30px;
+}
