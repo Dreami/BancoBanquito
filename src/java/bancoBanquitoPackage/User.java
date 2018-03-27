@@ -11,8 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class User {
-    private static final DateTimeFormatter DTF1 = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    private static final DateTimeFormatter DTF2 = DateTimeFormatter.ofPattern("M/d/yyyy");
+    private static final DateTimeFormatter DTF1 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter DTF2 = DateTimeFormatter.ofPattern("d/M/yyyy");
     private int id;
     private String name;
     private String lastname;

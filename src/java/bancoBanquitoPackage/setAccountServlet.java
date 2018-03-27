@@ -6,7 +6,9 @@
 package bancoBanquitoPackage;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,11 +20,10 @@ import javax.servlet.http.HttpSession;
  *
  * @author maple
  */
-public class accountServlet extends HttpServlet {
-    ArrayList<Account> accounts;
-    ArrayList<User> users;
-    ServletContext sc;
-    HttpSession s;
+public class setAccountServlet extends HttpServlet {
+    private ArrayList<Account> accounts;
+    private HttpSession s;
+    private ServletContext sc;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -35,56 +36,25 @@ public class accountServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         sc = getServletContext();
-        s = request.getSession();
-        users = (ArrayList<User>) sc.getAttribute("Users");
         accounts = (ArrayList<Account>) sc.getAttribute("Accounts");
         if(accounts == null) {
             accounts = new ArrayList<>();
         }
-        if(users == null) {
-            users = new ArrayList<>();
-        }
-        s.removeAttribute("clientNumError");
-        s.removeAttribute("accNumError");
-        s.removeAttribute("amountError");
-        s.removeAttribute("accCreated");
+        s = request.getSession();
+        s.removeAttribute("editSuccess");
+        int acc_num = Integer.parseInt(request.getParameter("acc_num"));
+        Account acc = searchAccount(acc_num);
         
-        String client_num = request.getParameter("client_num");
-        String acc_num = request.getParameter("acc_num");
-        String acc_type = request.getParameter("acc_type");
-        String amount = request.getParameter("amount");
+        acc.setType(request.getParameter("nextType"));
+        acc.setAmount(Float.parseFloat(request.getParameter("nextAmount")));
         
-        if(!isNumeric(client_num)) {
-            s.setAttribute("clientNumError", "<p class='input_error'>Numero de cliente no valido.</p>");
-        } else if (!isNumeric(acc_num)){
-            s.setAttribute("accNumError", "<p class='input_error'>Numero de cuenta no valido.</p>");
-        } else if(!isNumeric(amount)) {
-            s.setAttribute("amountError", "<p class='input_error'>Cantidad de monto no valido.</p>");
-        } else {
-            User userFound = null;
-            int userId = Integer.parseInt(client_num);
-            int accId = Integer.parseInt(acc_num);
-            float amountNum = Float.parseFloat(amount);
-            for(User u : users) {
-                if(u.getId() == userId) {
-                    userFound = u;
-                }
-            }
-            if(userFound != null) {
-                Account acc = new Account(accId, userFound, acc_type, amountNum);
-                accounts.add(acc);
-                sc.setAttribute("Accounts", accounts);
-                s.setAttribute("accCreated", "<div class='alert alert-success'>La cuenta <b>" + acc_num + "</b> fue creada exitosamente</div>");
-            } else {
-               s.setAttribute("clientNumError", "<p class='input_error'>Numero de cliente no valido.</p>");
-            }
-        }
-        response.sendRedirect("alta_cuenta.jsp");
-    }
-    
-    private boolean isNumeric(String n) {
-        //En lugar de \\d para evitar entradas con dos decimales, i.e. 9.00.1
-        return n.matches("[0-9]*\\.?[0-9]*");
+        int index = accounts.indexOf(acc);
+        
+        accounts.set(index, acc);
+        
+        sc.setAttribute("Accounts", accounts);
+        s.setAttribute("editSuccess", "<div class='alert alert-success'>Cuenta editada exitosamente</div>");
+        response.sendRedirect("editarClientes.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -125,5 +95,12 @@ public class accountServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
+    private Account searchAccount(int acc_num) {
+        for(Account a : accounts) {
+            if(a.getAccountNumber() == acc_num) {
+                return a;
+            }
+        }
+        return null;
+    }
 }

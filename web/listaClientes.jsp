@@ -20,6 +20,8 @@
             <jsp:include page="/mainMenuDiv.jsp"/>
             <div id="menuActions" class="col-md-8">
                 <h1>Lista de clientes</h1>
+                ${sessionScope.deleteSuccess}
+                ${sessionScope.editSuccess}
                 <c:forEach items="${applicationScope.Accounts}" var="acc">
                     <c:if test="${not sessionScope.loggedUser.equals(acc.getUser())}">
                         <table class="col-md-12 clientTable">

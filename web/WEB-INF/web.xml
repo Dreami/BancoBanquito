@@ -16,6 +16,22 @@
         <servlet-name>transferServlet</servlet-name>
         <servlet-class>bancoBanquitoPackage.transferServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>manageClientServlet</servlet-name>
+        <servlet-class>bancoBanquitoPackage.manageClientServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>setAccountServlet</servlet-name>
+        <servlet-class>bancoBanquitoPackage.setAccountServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>logoutSerlvet</servlet-name>
+        <servlet-class>bancoBanquitoPackage.logoutSerlvet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>personalnfoServlet</servlet-name>
+        <servlet-class>bancoBanquitoPackage.personalInfoServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>loginServlet</servlet-name>
         <url-pattern>/loginServlet</url-pattern>
@@ -36,6 +52,22 @@
     <servlet-mapping>
         <servlet-name>transferServlet</servlet-name>
         <url-pattern>/transferServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>manageClientServlet</servlet-name>
+        <url-pattern>/manageClientServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>setAccountServlet</servlet-name>
+        <url-pattern>/setAccountServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>logoutSerlvet</servlet-name>
+        <url-pattern>/logoutSerlvet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>personalnfoServlet</servlet-name>
+        <url-pattern>/personalnfoServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

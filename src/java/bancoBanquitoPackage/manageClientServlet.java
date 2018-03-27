@@ -6,6 +6,7 @@
 package bancoBanquitoPackage;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -18,12 +19,11 @@ import javax.servlet.http.HttpSession;
  *
  * @author maple
  */
-public class accountServlet extends HttpServlet {
-    ArrayList<Account> accounts;
-    ArrayList<User> users;
-    ServletContext sc;
-    HttpSession s;
-    /**
+public class manageClientServlet extends HttpServlet {
+    private ArrayList<Account> accounts;
+    private HttpSession s;
+    private ServletContext sc;
+    /**pS
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
@@ -34,57 +34,35 @@ public class accountServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        Account acc;
         sc = getServletContext();
-        s = request.getSession();
-        users = (ArrayList<User>) sc.getAttribute("Users");
         accounts = (ArrayList<Account>) sc.getAttribute("Accounts");
         if(accounts == null) {
             accounts = new ArrayList<>();
         }
-        if(users == null) {
-            users = new ArrayList<>();
-        }
-        s.removeAttribute("clientNumError");
-        s.removeAttribute("accNumError");
-        s.removeAttribute("amountError");
-        s.removeAttribute("accCreated");
+        s = request.getSession();
         
-        String client_num = request.getParameter("client_num");
-        String acc_num = request.getParameter("acc_num");
-        String acc_type = request.getParameter("acc_type");
-        String amount = request.getParameter("amount");
+        s.removeAttribute("deleteSuccess");
+        s.removeAttribute("editing_client");
+        s.removeAttribute("editSuccess");
         
-        if(!isNumeric(client_num)) {
-            s.setAttribute("clientNumError", "<p class='input_error'>Numero de cliente no valido.</p>");
-        } else if (!isNumeric(acc_num)){
-            s.setAttribute("accNumError", "<p class='input_error'>Numero de cuenta no valido.</p>");
-        } else if(!isNumeric(amount)) {
-            s.setAttribute("amountError", "<p class='input_error'>Cantidad de monto no valido.</p>");
-        } else {
-            User userFound = null;
-            int userId = Integer.parseInt(client_num);
-            int accId = Integer.parseInt(acc_num);
-            float amountNum = Float.parseFloat(amount);
-            for(User u : users) {
-                if(u.getId() == userId) {
-                    userFound = u;
-                }
-            }
-            if(userFound != null) {
-                Account acc = new Account(accId, userFound, acc_type, amountNum);
-                accounts.add(acc);
+        String delete = request.getParameter("delete");
+        String edit = request.getParameter("edit");
+        if(delete != null) {
+            acc = searchAccount(Integer.parseInt(delete));
+            if(acc != null) {
+                accounts.remove(acc);
+                s.setAttribute("deleteSuccess", "<div class='alert alert-success'>Cuenta borrada exitosamente</div>");
                 sc.setAttribute("Accounts", accounts);
-                s.setAttribute("accCreated", "<div class='alert alert-success'>La cuenta <b>" + acc_num + "</b> fue creada exitosamente</div>");
-            } else {
-               s.setAttribute("clientNumError", "<p class='input_error'>Numero de cliente no valido.</p>");
+                response.sendRedirect("listaClientes.jsp");
+            }
+        } else if(edit != null) {
+            acc = searchAccount(Integer.parseInt(edit));
+            if(acc != null) {
+                s.setAttribute("editing_client", acc);
+                response.sendRedirect("editarClientes.jsp");
             }
         }
-        response.sendRedirect("alta_cuenta.jsp");
-    }
-    
-    private boolean isNumeric(String n) {
-        //En lugar de \\d para evitar entradas con dos decimales, i.e. 9.00.1
-        return n.matches("[0-9]*\\.?[0-9]*");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -126,4 +104,12 @@ public class accountServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private Account searchAccount(int acc_num) {
+        for(Account a : accounts) {
+            if(a.getAccountNumber() == acc_num) {
+                return a;
+            }
+        }
+        return null;
+    }
 }

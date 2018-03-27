@@ -6,6 +6,7 @@
 package bancoBanquitoPackage;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -18,11 +19,10 @@ import javax.servlet.http.HttpSession;
  *
  * @author maple
  */
-public class accountServlet extends HttpServlet {
-    ArrayList<Account> accounts;
-    ArrayList<User> users;
-    ServletContext sc;
-    HttpSession s;
+public class personalInfoServlet extends HttpServlet {
+    private ArrayList<User> users;
+    private HttpSession s;
+    private ServletContext sc;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -35,56 +35,47 @@ public class accountServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         sc = getServletContext();
-        s = request.getSession();
         users = (ArrayList<User>) sc.getAttribute("Users");
-        accounts = (ArrayList<Account>) sc.getAttribute("Accounts");
-        if(accounts == null) {
-            accounts = new ArrayList<>();
-        }
+        s = request.getSession();
+        User loggedUser = (User) s.getAttribute("loggedUser");
         if(users == null) {
             users = new ArrayList<>();
         }
-        s.removeAttribute("clientNumError");
-        s.removeAttribute("accNumError");
-        s.removeAttribute("amountError");
-        s.removeAttribute("accCreated");
-        
-        String client_num = request.getParameter("client_num");
-        String acc_num = request.getParameter("acc_num");
-        String acc_type = request.getParameter("acc_type");
-        String amount = request.getParameter("amount");
-        
-        if(!isNumeric(client_num)) {
-            s.setAttribute("clientNumError", "<p class='input_error'>Numero de cliente no valido.</p>");
-        } else if (!isNumeric(acc_num)){
-            s.setAttribute("accNumError", "<p class='input_error'>Numero de cuenta no valido.</p>");
-        } else if(!isNumeric(amount)) {
-            s.setAttribute("amountError", "<p class='input_error'>Cantidad de monto no valido.</p>");
+        s.removeAttribute("changesSuccess");
+        s.removeAttribute("passwordErr");
+        String name, lastname, bday, address, postalcode, city, state, country, phone, email, password1, password2;
+        password1 = request.getParameter("password1");
+        password2 = request.getParameter("password2");
+        if(password1.equals(password2)) {
+            name = request.getParameter("name");
+            lastname = request.getParameter("lastname");
+            bday = request.getParameter("bday");
+            address = request.getParameter("address");
+            postalcode = request.getParameter("postalcode");
+            city = request.getParameter("city");
+            state = request.getParameter("state");
+            country = request.getParameter("country");
+            phone = request.getParameter("phone");
+            email = request.getParameter("email");
+            
+            if(email.isEmpty()) {
+                email = loggedUser.getEmail();
+            }
+            if(password1.isEmpty()) {
+                password1 = loggedUser.getPassword();
+            }
+            User modifiedUser = new User(loggedUser.getId() ,name, lastname, address, postalcode, city, state, country, bday, phone, email, password1);
+            int currentUserIndex = users.indexOf(loggedUser);
+            users.set(currentUserIndex, modifiedUser);
+            sc.setAttribute("Users", users);
+            s.setAttribute("loggedUser", modifiedUser);
+            s.setAttribute("changesSuccess", "<div class='alert alert-success'>Su informacion fue modificada.</div>");
+            response.sendRedirect("cambiarDetalles.jsp");
         } else {
-            User userFound = null;
-            int userId = Integer.parseInt(client_num);
-            int accId = Integer.parseInt(acc_num);
-            float amountNum = Float.parseFloat(amount);
-            for(User u : users) {
-                if(u.getId() == userId) {
-                    userFound = u;
-                }
-            }
-            if(userFound != null) {
-                Account acc = new Account(accId, userFound, acc_type, amountNum);
-                accounts.add(acc);
-                sc.setAttribute("Accounts", accounts);
-                s.setAttribute("accCreated", "<div class='alert alert-success'>La cuenta <b>" + acc_num + "</b> fue creada exitosamente</div>");
-            } else {
-               s.setAttribute("clientNumError", "<p class='input_error'>Numero de cliente no valido.</p>");
-            }
+            s.setAttribute("passwordErr", "<p class='input_error'>Su contraseña no coincide.</p>");
+            response.sendRedirect("cambiarDetalles.jsp");
         }
-        response.sendRedirect("alta_cuenta.jsp");
-    }
-    
-    private boolean isNumeric(String n) {
-        //En lugar de \\d para evitar entradas con dos decimales, i.e. 9.00.1
-        return n.matches("[0-9]*\\.?[0-9]*");
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

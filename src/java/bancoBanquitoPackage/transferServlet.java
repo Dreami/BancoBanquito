@@ -8,6 +8,7 @@ package bancoBanquitoPackage;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpSession;
  */
 public class transferServlet extends HttpServlet {
     ArrayList<Account> accounts;
-    ServletContext sc = getServletContext();
+    ServletContext sc;
     HttpSession s;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,7 +35,16 @@ public class transferServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        sc = getServletContext();
+        s = request.getSession();
         accounts = (ArrayList<Account>) sc.getAttribute("Accounts");
+        Account acc;
+        
+        if(accounts == null) {
+            accounts = new ArrayList<>();
+        }
+        
+        Iterator<Account> iterator = accounts.iterator();
         
         s.removeAttribute("withdraw_success");
         s.removeAttribute("deposit_success");
@@ -47,25 +57,28 @@ public class transferServlet extends HttpServlet {
         
         if(isNumeric(amount_txt)) {
             amount = Float.parseFloat(amount_txt);
-            for(Account a : accounts) {
-                if(a.getAccountNumber() == acc_withdraw) {
-                    if(amount <= a.getAmount()) {
-                        a.substractAmount(amount);
+            
+            while(iterator.hasNext()) {
+                acc = iterator.next();
+                if(acc.getAccountNumber() == acc_withdraw) {
+                    if(amount <= acc.getAmount()) {
+                        acc.substractAmount(amount);
                         s.setAttribute("withdraw_success", "<div class='alert alert-success'> $" + amount 
-                                + " fue retirada de <b>" + acc_withdraw +  "</b> exitosamente</div>");
+                                + " fue retirada de <b>" + acc_withdraw +  "</b> exitosamente</div>"); 
                     } else {
                         s.setAttribute("amountErr", "<p class='input_error'>Credito insuficiente para retirar</p>");
                     }
                 }
                 
-                if(a.getAccountNumber() == acc_deposit) {
-                    a.addAmount(amount);
+                if(acc.getAccountNumber() == acc_deposit) {
+                    acc.addAmount(amount);
                     s.setAttribute("deposit_success", "<div class='alert alert-success'> $" + amount 
                                 + " fue depositada a <b>" + acc_withdraw +  "<b> exitosamente</div>");
                 }
             }
         }
-        
+            
+        sc.setAttribute("Accounts", accounts);
         response.sendRedirect("transferencias.jsp");
     }
     
